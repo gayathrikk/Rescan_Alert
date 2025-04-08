@@ -16,7 +16,7 @@ public class Image_missing {
         Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections = connectAndQueryDB();
 
         // Step 2: SSH Connection and check for missing lossless.jp2 files
-        String host = "pp6.humanbrain.in";
+        String host = "pp3.humanbrain.in";
         String user = "hbp";
         String password = "Health#123"; // ⚠ Move this to a secure location.
         String basePath = "/lustre/data/store10PB/repos1/iitlab/humanbrain/analytics";
