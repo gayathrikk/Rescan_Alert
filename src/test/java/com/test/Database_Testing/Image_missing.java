@@ -177,8 +177,8 @@ public class Image_missing {
     private void sendEmailAlert(Map<String, List<Integer>> missingSections, Map<Integer, String> biosampleBrainNames) {
     	String[] to = {"karthik6595@gmail.com", "sindhu.r@htic.iitm.ac.in"};
         String[] cc = {"richavermaj@gmail.com", "nathan.i@htic.iitm.ac.in", "divya.d@htic.iitm.ac.in", "venip@htic.iitm.ac.in"};
-        String from = "gayathri@htic.iitm.ac.in";
-        String password = "Gayu@0918"; 
+        String from = "automationsoftware25@gmail.com";
+        String password = "wjzcgaramsqvagxu"; 
         String host = "smtp.gmail.com";
 
         Properties properties = System.getProperties();
