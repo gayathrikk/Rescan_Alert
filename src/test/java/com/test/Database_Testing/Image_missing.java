@@ -84,6 +84,11 @@ public class Image_missing {
                 // Extract suffix from series name
                 String suffix = seriesName.contains("_") ? seriesName.split("_", 2)[1] : seriesName;
 
+                // Skip if suffix is v11
+                if ("v11".equalsIgnoreCase(suffix)) {
+                    continue;
+                }
+
                 // Populate the map
                 biosampleSeriesSections
                         .computeIfAbsent(biosample, k -> new HashMap<>())
@@ -101,56 +106,53 @@ public class Image_missing {
         return biosampleSeriesSections;
     }
 
+    private void checkMissingLosslessFiles(String host, String user, String password, String basePath, 
+            Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections) {
+        com.jcraft.jsch.Session session = null;
+        Map<String, List<Integer>> missingSections = new HashMap<>();
 
+        try {
+            JSch jsch = new JSch();
+            session = jsch.getSession(user, host, 22);
+            session.setPassword(password);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            System.out.println("\nConnected to " + host);
 
-	 private void checkMissingLosslessFiles(String host, String user, String password, String basePath, 
-			            Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections) {
-			com.jcraft.jsch.Session session = null;
-			Map<String, List<Integer>> missingSections = new HashMap<>();
-			
-			try {
-				JSch jsch = new JSch();
-				session = jsch.getSession(user, host, 22);
-				session.setPassword(password);
-				session.setConfig("StrictHostKeyChecking", "no");
-				session.connect();
-				System.out.println("\nConnected to " + host);
-			
-			for (Map.Entry<Integer, Map<String, List<Integer>>> entry : biosampleSeriesSections.entrySet()) {
-			int biosample = entry.getKey();
-			
-			for (Map.Entry<String, List<Integer>> seriesEntry : entry.getValue().entrySet()) {
-				String suffix = seriesEntry.getKey();
-				String remotePath = basePath + "/" + biosample + "/" + suffix;
-			
-			for (int sectionNo : seriesEntry.getValue()) {
-				String command1 = "ls " + remotePath + " | grep '_" + sectionNo + "_lossless.jp2'";
-				boolean fileExists = executeRemoteCommand(session, command1);
-			
-			if (!fileExists) {
-				String command2 = "ls " + remotePath + " | grep '_" + sectionNo + "_Rescan01_lossless.jp2'";
-				fileExists = executeRemoteCommand(session, command2);
-			}
-			
-			if (!fileExists) {
-				System.out.println("Missing lossless.jp2 for section " + sectionNo + " in " + remotePath);
-				missingSections.computeIfAbsent("Biosample " + biosample + " (" + suffix + ")", k -> new ArrayList<>()).add(sectionNo);
-			}
-			}
-			}
-			}
-			
-			if (!missingSections.isEmpty()) {
-			sendEmailAlert(missingSections, biosampleBrainNames);  // Pass Brain Name data
-			}
-			
-			} catch (JSchException e) {
-			System.err.println("SSH Connection error: " + e.getMessage());
-			} finally {
-			if (session != null) session.disconnect();
-			}
-			}
+            for (Map.Entry<Integer, Map<String, List<Integer>>> entry : biosampleSeriesSections.entrySet()) {
+                int biosample = entry.getKey();
 
+                for (Map.Entry<String, List<Integer>> seriesEntry : entry.getValue().entrySet()) {
+                    String suffix = seriesEntry.getKey();
+                    String remotePath = basePath + "/" + biosample + "/" + suffix;
+
+                    for (int sectionNo : seriesEntry.getValue()) {
+                        String command1 = "ls " + remotePath + " | grep '_" + sectionNo + "_lossless.jp2'";
+                        boolean fileExists = executeRemoteCommand(session, command1);
+
+                        if (!fileExists) {
+                            String command2 = "ls " + remotePath + " | grep '_" + sectionNo + "_Rescan01_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command2);
+                        }
+
+                        if (!fileExists) {
+                            System.out.println("Missing lossless.jp2 for section " + sectionNo + " in " + remotePath);
+                            missingSections.computeIfAbsent("Biosample " + biosample + " (" + suffix + ")", k -> new ArrayList<>()).add(sectionNo);
+                        }
+                    }
+                }
+            }
+
+            if (!missingSections.isEmpty()) {
+                sendEmailAlert(missingSections, biosampleBrainNames);  // Pass Brain Name data
+            }
+
+        } catch (JSchException e) {
+            System.err.println("SSH Connection error: " + e.getMessage());
+        } finally {
+            if (session != null) session.disconnect();
+        }
+    }
 
     private boolean executeRemoteCommand(com.jcraft.jsch.Session session, String command) {
         try {
@@ -175,7 +177,7 @@ public class Image_missing {
     }
 
     private void sendEmailAlert(Map<String, List<Integer>> missingSections, Map<Integer, String> biosampleBrainNames) {
-    	String[] to = {"karthik6595@gmail.com", "sindhu.r@htic.iitm.ac.in"};
+        String[] to = {"karthik6595@gmail.com", "sindhu.r@htic.iitm.ac.in"};
         String[] cc = {"richavermaj@gmail.com", "nathan.i@htic.iitm.ac.in", "divya.d@htic.iitm.ac.in", "venip@htic.iitm.ac.in"};
         String from = "automationsoftware25@gmail.com";
         String password = "wjzcgaramsqvagxu"; 
@@ -199,7 +201,7 @@ public class Image_missing {
             for (String recipient : to) {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
-           
+
             for (String ccRecipient : cc) {
                 message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccRecipient));
             }
@@ -243,5 +245,4 @@ public class Image_missing {
             e.printStackTrace();
         }
     }
-
 }
