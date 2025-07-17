@@ -56,7 +56,8 @@ public class Image_missing {
                        "INNER JOIN seriesset ss ON sr.seriesset = ss.id " +
                        "INNER JOIN biosample b ON ss.biosample = b.id " +
                        "WHERE s.created_ts BETWEEN '2025-02-06 00:00:00' AND NOW() " +
-                       "AND (s.jp2Path IS NULL OR s.jp2Path NOT LIKE '%BFI%')";
+                       "AND (s.jp2Path IS NULL OR s.jp2Path NOT LIKE '%BFI%')"+
+                       "AND (sr.name LIKE '%NISL%' OR sr.name LIKE '%HEOS%' OR sr.name LIKE '%IHCS%' OR sr.name LIKE '%MYEL%')";
 
         Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections = new HashMap<>();
 
@@ -133,6 +134,10 @@ public class Image_missing {
                         if (!fileExists) {
                             String command2 = "ls " + remotePath + " | grep '_" + sectionNo + "_Rescan01_lossless.jp2'";
                             fileExists = executeRemoteCommand(session, command2);
+                        }
+                        if (!fileExists) {
+                            String command3 = "ls " + remotePath + " | grep '_" + sectionNo + "-MR_[0-9]*_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command3);
                         }
 
                         if (!fileExists) {
