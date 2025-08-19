@@ -182,8 +182,9 @@ public class Image_missing {
     }
 
     private void sendEmailAlert(Map<String, List<Integer>> missingSections, Map<Integer, String> biosampleBrainNames) {
-        String[] to = {"karthik6595@gmail.com", "sindhu.r@htic.iitm.ac.in"};
-        String[] cc = {"richavermaj@gmail.com", "nathan.i@htic.iitm.ac.in", "divya.d@htic.iitm.ac.in", "venip@htic.iitm.ac.in", "meena@htic.iitm.ac.in", "nitheshkumarsundhar@gmail.com"};
+       // String[] to = {"karthik6595@gmail.com", "sindhu.r@htic.iitm.ac.in"};
+        String[] to = {"nathan.i@htic.iitm.ac.in","nitheshkumarsundhar@gmail.com"};
+       // String[] cc = {"richavermaj@gmail.com", "nathan.i@htic.iitm.ac.in", "divya.d@htic.iitm.ac.in", "venip@htic.iitm.ac.in", "meena@htic.iitm.ac.in", "nitheshkumarsundhar@gmail.com"};
         String from = "automationsoftware25@gmail.com";
         String password = "wjzcgaramsqvagxu"; 
         String host = "smtp.gmail.com";
@@ -207,9 +208,9 @@ public class Image_missing {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
 
-            for (String ccRecipient : cc) {
-                message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccRecipient));
-            }
+            // for (String ccRecipient : cc) {
+            //     message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccRecipient));
+            // }
             message.setSubject("Alert: Rescan Issues");
 
             StringBuilder emailBody = new StringBuilder("<html><body>");
@@ -251,3 +252,4 @@ public class Image_missing {
         }
     }
 }
+
