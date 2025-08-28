@@ -207,9 +207,9 @@ public class Image_missing {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
 
-            // for (String ccRecipient : cc) {
-            //     message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccRecipient));
-            // }
+             for (String ccRecipient : cc) {
+                 message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccRecipient));
+             }
             message.setSubject("Alert: Rescan Issues");
 
             StringBuilder emailBody = new StringBuilder("<html><body>");
@@ -251,5 +251,6 @@ public class Image_missing {
         }
     }
 }
+
 
 
