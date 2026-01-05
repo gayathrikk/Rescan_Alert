@@ -50,16 +50,29 @@ public class Image_missing {
     private Map<Integer, String> biosampleBrainNames = new HashMap<>(); // Stores biosample -> brain name
 
     private Map<Integer, Map<String, List<Integer>>> executeAndPrintQuery(Connection connection) {
-        String query = "SELECT b.id AS biosample, sr.name AS series_name, s.positionindex AS section_no, ss.name AS brain_name " +
-                       "FROM section s " +
-                       "INNER JOIN series sr ON s.series = sr.id " +
-                       "INNER JOIN seriesset ss ON sr.seriesset = ss.id " +
-                       "INNER JOIN biosample b ON ss.biosample = b.id " +
-                       "WHERE s.created_ts BETWEEN '2025-02-06 00:00:00' AND NOW() " +
-                       "AND (s.jp2Path IS NULL OR s.jp2Path NOT LIKE '%BFI%')"+
-                       "AND (sr.name LIKE '%NISL%' OR sr.name LIKE '%HEOS%' OR sr.name LIKE '%IHCS%' OR sr.name LIKE '%MYEL%')";
-
-        Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections = new HashMap<>();
+       String query =
+    "SELECT b.id AS biosample, sr.name AS series_name, s.positionindex AS section_no, ss.name AS brain_name " +
+    "FROM section s " +
+    "INNER JOIN series sr ON s.series = sr.id " +
+    "INNER JOIN seriesset ss ON sr.seriesset = ss.id " +
+    "INNER JOIN biosample b ON ss.biosample = b.id " +
+    "WHERE s.created_ts BETWEEN '2025-02-06 00:00:00' AND NOW() " +
+    "AND (s.jp2Path IS NULL OR s.jp2Path NOT LIKE '%BFI%') " +
+    "AND ( " +
+    "     sr.name LIKE '%NISL%' " +
+    "  OR sr.name LIKE '%HEOS%' " +
+    "  OR sr.name LIKE '%IHCS%' " +
+    "  OR sr.name LIKE '%MYEL%' " +
+    "  OR sr.name LIKE '%IHC1%' " +
+    "  OR sr.name LIKE '%IHC2%' " +
+    "  OR sr.name LIKE '%IHC3%' " +
+    "  OR sr.name LIKE '%IHC4%' " +
+    "  OR sr.name LIKE '%IHC5%' " +
+    "  OR sr.name LIKE '%IHC6%' " +
+    "  OR sr.name LIKE '%IHC7%' " +
+    "  OR sr.name LIKE '%IHC8%' " +
+    ")";
+   Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections = new HashMap<>();
 
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -251,6 +264,7 @@ public class Image_missing {
         }
     }
 }
+
 
 
 
