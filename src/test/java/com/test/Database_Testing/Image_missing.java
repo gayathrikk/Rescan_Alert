@@ -152,6 +152,27 @@ public class Image_missing {
                             String command3 = "ls " + remotePath + " | grep '_" + sectionNo + "-MR_[0-9]*_lossless.jp2'";
                             fileExists = executeRemoteCommand(session, command3);
                         }
+                         if (!fileExists) {
+                            String command4 = "ls " + remotePath + " | grep '_" + sectionNo + "_R01_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command4);
+                        }
+                         if (!fileExists) {
+                            String command5 = "ls " + remotePath + " | grep '_" + sectionNo + "_Rescan02_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command5);
+                        }
+                         if (!fileExists) {
+                            String command6 = "ls " + remotePath + " | grep '_" + sectionNo + "_R02_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command6);
+                        }
+                         if (!fileExists) {
+                            String command7 = "ls " + remotePath + " | grep '_" + sectionNo + "_Slide01_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command7);
+                        }
+                         if (!fileExists) {
+                            String command8 = "ls " + remotePath + " | grep '_" + sectionNo + "_Slide02_lossless.jp2'";
+                            fileExists = executeRemoteCommand(session, command8);
+                        }
+                        
 
                         if (!fileExists) {
                             System.out.println("Missing lossless.jp2 for section " + sectionNo + " in " + remotePath);
