@@ -1,13 +1,29 @@
 package com.test.Database_Testing;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import org.testng.annotations.Test;
 
 import java.io.InputStream;
-import java.sql.*;
-import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class Image_missing {
 
@@ -58,27 +74,28 @@ public class Image_missing {
     private Map<Integer, Map<String, List<Integer>>> executeAndPrintQuery(Connection connection) {
 
         String query =
-                "SELECT b.id AS biosample, sr.name AS series_name, s.positionindex AS section_no, ss.name AS brain_name " +
-                "FROM section s " +
-                "INNER JOIN series sr ON s.series = sr.id " +
-                "INNER JOIN seriesset ss ON sr.seriesset = ss.id " +
-                "INNER JOIN biosample b ON ss.biosample = b.id " +
-                "WHERE s.created_ts BETWEEN '2025-02-06 00:00:00' AND NOW() " +
-                "AND (s.jp2Path IS NULL OR s.jp2Path NOT LIKE '%BFI%') " +
-                "AND ( " +
-                "     sr.name LIKE '%NISL%' " +
-                "  OR sr.name LIKE '%HEOS%' " +
-                "  OR sr.name LIKE '%IHCS%' " +
-                "  OR sr.name LIKE '%MYEL%' " +
-                "  OR sr.name LIKE '%IHC1%' " +
-                "  OR sr.name LIKE '%IHC2%' " +
-                "  OR sr.name LIKE '%IHC3%' " +
-                "  OR sr.name LIKE '%IHC4%' " +
-                "  OR sr.name LIKE '%IHC5%' " +
-                "  OR sr.name LIKE '%IHC6%' " +
-                "  OR sr.name LIKE '%IHC7%' " +
-                "  OR sr.name LIKE '%IHC8%' " +
-                ")";
+                "SELECT b.id AS biosample, sr.name AS series_name, "
+                        + "s.positionindex AS section_no, ss.name AS brain_name "
+                        + "FROM section s "
+                        + "INNER JOIN series sr ON s.series = sr.id "
+                        + "INNER JOIN seriesset ss ON sr.seriesset = ss.id "
+                        + "INNER JOIN biosample b ON ss.biosample = b.id "
+                        + "WHERE s.created_ts BETWEEN '2025-02-06 00:00:00' AND NOW() "
+                        + "AND (s.jp2Path IS NULL OR s.jp2Path NOT LIKE '%BFI%') "
+                        + "AND ( "
+                        + "     sr.name LIKE '%NISL%' "
+                        + "  OR sr.name LIKE '%HEOS%' "
+                        + "  OR sr.name LIKE '%IHCS%' "
+                        + "  OR sr.name LIKE '%MYEL%' "
+                        + "  OR sr.name LIKE '%IHC1%' "
+                        + "  OR sr.name LIKE '%IHC2%' "
+                        + "  OR sr.name LIKE '%IHC3%' "
+                        + "  OR sr.name LIKE '%IHC4%' "
+                        + "  OR sr.name LIKE '%IHC5%' "
+                        + "  OR sr.name LIKE '%IHC6%' "
+                        + "  OR sr.name LIKE '%IHC7%' "
+                        + "  OR sr.name LIKE '%IHC8%' "
+                        + ")";
 
         Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections = new HashMap<>();
 
@@ -148,11 +165,14 @@ public class Image_missing {
             String basePath,
             Map<Integer, Map<String, List<Integer>>> biosampleSeriesSections) {
 
-        Session session = null;
+        // Fully qualified name avoids conflict with javax.mail.Session
+        com.jcraft.jsch.Session session = null;
+
         Map<String, List<Integer>> missingSections = new HashMap<>();
 
         try {
             JSch jsch = new JSch();
+
             session = jsch.getSession(user, host, 22);
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
@@ -226,7 +246,9 @@ public class Image_missing {
         }
     }
 
-    private boolean executeRemoteCommand(Session session, String command) {
+    private boolean executeRemoteCommand(
+            com.jcraft.jsch.Session session,
+            String command) {
 
         ChannelExec channelExec = null;
 
@@ -261,19 +283,13 @@ public class Image_missing {
             Map<Integer, String> biosampleBrainNames) {
 
         String[] to = {
-                 "gayathri@htic.iitm.ac.in"
-               // "karthik6595@gmail.com",
-               // "sindhu.r@htic.iitm.ac.in"
+                "gayathri@htic.iitm.ac.in"
+                // "karthik6595@gmail.com",
+                // "sindhu.r@htic.iitm.ac.in"
         };
 
         String[] cc = {
-                //"richavermaj@gmail.com",
-               // "nathan.i@htic.iitm.ac.in",
-               // "divya.d@htic.iitm.ac.in",
-                "venip@htic.iitm.ac.in",
-               // "meena@htic.iitm.ac.in",
-                //"nitheshkumarsundhar@gmail.com",
-               // "manjukeerthi03@gmail.com"
+                "venip@htic.iitm.ac.in"
         };
 
         String from = "automationsoftware25@gmail.com";
@@ -339,6 +355,7 @@ public class Image_missing {
                         int biosample = Integer.parseInt(parts[1]);
                         brainName = biosampleBrainNames.getOrDefault(biosample, "Unknown");
                     } catch (NumberFormatException ignored) {
+                        // Keep brain name as Unknown
                     }
                 }
 
