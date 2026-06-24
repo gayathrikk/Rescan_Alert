@@ -283,13 +283,18 @@ public class Image_missing {
             Map<Integer, String> biosampleBrainNames) {
 
         String[] to = {
-                "gayathri@htic.iitm.ac.in"
-                // "karthik6595@gmail.com",
-                // "sindhu.r@htic.iitm.ac.in"
+                 "karthik6595@gmail.com",
+                 "sindhu.r@htic.iitm.ac.in"
         };
 
         String[] cc = {
-                "venip@htic.iitm.ac.in"
+               "richavermaj@gmail.com", 
+               "nathan.i@htic.iitm.ac.in", 
+               "divya.d@htic.iitm.ac.in", 
+               "venip@htic.iitm.ac.in", 
+               "meena@htic.iitm.ac.in",
+               "nitheshkumarsundhar@gmail.com",
+               "manjukeerthi03@gmail.com"
         };
 
         String from = "automationsoftware25@gmail.com";
