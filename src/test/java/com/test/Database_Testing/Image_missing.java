@@ -113,7 +113,7 @@ public class Image_missing {
                 int biosample = resultSet.getInt("biosample");
 
                 // Exclude biosamples 580 and 437 completely
-                if (biosample == 580 || biosample == 437) {
+                if (biosample == 580 || biosample == 437 || biosample ==584 || biosample ==585 || biosample ==586 || biosample ==587) {
                     continue;
                 }
 
