@@ -294,7 +294,8 @@ public class Image_missing {
                "venip@htic.iitm.ac.in", 
                "meena@htic.iitm.ac.in",
                "nitheshkumarsundhar@gmail.com",
-               "manjukeerthi03@gmail.com"
+               "manjukeerthi03@gmail.com",
+               "nithyamoorthy26@gmail.com"
         };
 
         String from = "automationsoftware25@gmail.com";
