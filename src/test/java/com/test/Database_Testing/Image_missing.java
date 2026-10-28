@@ -287,8 +287,7 @@ public class Image_missing {
                  "sindhu.r@htic.iitm.ac.in"
         };
 
-        String[] cc = {
-               "richavermaj@gmail.com", 
+        String[] cc = { 
                "nathan.i@htic.iitm.ac.in", 
                "divya.d@htic.iitm.ac.in", 
                "venip@htic.iitm.ac.in", 
